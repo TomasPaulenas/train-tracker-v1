@@ -15,7 +15,15 @@ export type Workout = {
     id: string;
     date: string;
     title: string;
-    exercises: string[];
+    exercises: Exercise[];
     notes?: string;
     createdAt?: string;
+};
+
+export type Exercise = {
+    id: string;
+    name: string;
+    reps: number;
+    weight: number;
+
 };
