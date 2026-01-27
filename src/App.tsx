@@ -1,5 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Workout, Exercise } from "./types/workout";
+
+
+
+
+
+function createworkout(workout: Workout[]) {
+
+
+
+  const newWorkout = {
+    id: Math.random().toString(),
+    title: "New Workout",
+    date: new Date().toISOString().slice(0, 10),
+    exercises: []
+  }
+
+
+  return [...workout, newWorkout]
+
+
+
+};
+
+
+
 
 export function App() {
   const [workouts, setWorkout] = useState<Workout[]>([]);
@@ -9,22 +34,32 @@ export function App() {
     reps: 0,
     weight: 0,
   })
+  const [hydrated, setHydrated] = useState(false);
 
-  function createworkout() {
+  useEffect(() => {
+    const saved = localStorage.getItem("workouts");
+    if (!saved) { setHydrated(true); return };
 
-    const newWorkout = {
-      id: Math.random().toString(),
-      title: "New Workout",
-      date: new Date().toISOString().slice(0, 10),
-      exercises: []
+    try {
+      const parsed = JSON.parse(saved) as Workout[];
+      setWorkout(parsed);
+    } catch {
+      // si está corrupto, no crashear
+      setWorkout([]);
+
     }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+
+    if (!hydrated) return;
+
+    localStorage.setItem("workouts", JSON.stringify(workouts))
 
 
 
-
-    setWorkout([...workouts, newWorkout])
-
-  };
+  }, [workouts, hydrated])
 
   function deleteWorkout(id: string) {
 
@@ -53,12 +88,11 @@ export function App() {
 
   function addExercise(id: string, exerciseData: Exercise) {
     const updated = workouts.map((currentWorkout) => {
-      // si NO es el workout al que quiero agregar el ejercicio, lo dejo igual
+
       if (currentWorkout.id !== id) {
         return currentWorkout;
       }
 
-      // si SÍ es el workout, devuelvo una copia con exercises actualizado
       return {
         ...currentWorkout,
         exercises: [...currentWorkout.exercises, exerciseData],
@@ -78,11 +112,18 @@ export function App() {
 
   })
 
+  function handleWorkout() {
+
+
+    setWorkout(createworkout(workouts))
+
+  }
+
 
 
   return (
     <div>
-      <button onClick={createworkout}>add workout</button>
+      <button onClick={handleWorkout}  >add workout</button>
 
       <div>
         {totalWorkouts}
