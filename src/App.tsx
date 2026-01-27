@@ -33,22 +33,22 @@ export function App() {
     setWorkout(updated);
   };
 
-  function deleteExercise(workoutid: string, exercisesid: string) {
-    const updated = workouts.map((workout) => {
-      if (workout.id === workoutid) {
-        return {
-          ...workout,
-          exercises: workout.exercises.filter(
-            (exercise) => exercise.id !== exercisesid
-          ),
-        };
-      }
+  // function deleteExercise(workoutid: string, exercisesid: string) {
+  //   const updated = workouts.map((workout) => {
+  //     if (workout.id === workoutid) {
+  //       return {
+  //         ...workout,
+  //         exercises: workout.exercises.filter(
+  //           (exercise) => exercise.id !== exercisesid
+  //         ),
+  //       };
+  //     }
 
-      return workout;
-    });
+  //     return workout;
+  //   });
 
-    setWorkout(updated);
-  }
+  //   setWorkout(updated);
+  // }
 
 
   function addExercise(id: string, exerciseData: Exercise) {
