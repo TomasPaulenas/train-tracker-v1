@@ -71,3 +71,21 @@ export default defineConfig([
   },
 ])
 ```
+---
+
+## Train Tracker — v0.1
+
+Simple workout tracking app built with React, TypeScript and Vite.
+
+### Features
+- Create and delete workouts
+- Add exercises to workouts
+- LocalStorage persistence
+- Derived state handling
+
+### Deploy
+👉 https://TU-LINK-DE-VERCEL
+
+### Known issues (v0.1)
+- Exercise form state is shared across workouts; will be isolated per workout in the next iteration.
+
