@@ -89,3 +89,10 @@ Simple workout tracking app built with React, TypeScript and Vite.
 ### Known issues (v0.1)
 - Exercise form state is shared across workouts; will be isolated per workout in the next iteration.
 
+## Persistence strategy
+
+This app persists the full `workouts` state (workouts and their nested exercises) in `localStorage`.
+
+- Load: on app start (first render), we read `localStorage.getItem("workouts")`. If it’s missing or invalid JSON, we fall back to an empty list.
+- Save: after hydration, every change to `workouts` triggers a save to `localStorage` (create workout, delete workout, add exercise).
+- Goal: keep the UI state in sync with local storage without overwriting stored data before the initial load completes.
