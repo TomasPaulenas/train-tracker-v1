@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Workout, Exercise } from "./types/workout";
 import { createworkout } from "./helpers/createWorkout";
+import { deleteWorkout } from "./helpers/deleteWorkout";
 
 
 export function App() {
@@ -8,8 +9,7 @@ export function App() {
   const [newExerciseForm, setExerciseForm] = useState({
     id: "",
     name: "",
-    reps: 0,
-    weight: 0,
+    sets: [{ reps: 0, weight: 0 }],
   })
   const [hydrated, setHydrated] = useState(false);
 
@@ -21,7 +21,6 @@ export function App() {
       const parsed = JSON.parse(saved) as Workout[];
       setWorkout(parsed);
     } catch {
-      // si está corrupto, no crashear
       setWorkout([]);
 
     }
@@ -38,29 +37,7 @@ export function App() {
 
   }, [workouts, hydrated])
 
-  function deleteWorkout(id: string) {
 
-
-    const updated = workouts.filter((w) => w.id !== id);
-    setWorkout(updated);
-  };
-
-  // function deleteExercise(workoutid: string, exercisesid: string) {
-  //   const updated = workouts.map((workout) => {
-  //     if (workout.id === workoutid) {
-  //       return {
-  //         ...workout,
-  //         exercises: workout.exercises.filter(
-  //           (exercise) => exercise.id !== exercisesid
-  //         ),
-  //       };
-  //     }
-
-  //     return workout;
-  //   });
-
-  //   setWorkout(updated);
-  // }
 
 
   function addExercise(id: string, exerciseData: Exercise) {
@@ -96,6 +73,11 @@ export function App() {
 
   }
 
+  function handleDeleteWorkout(id: string) {
+
+    setWorkout(prev => deleteWorkout(prev, id))
+  }
+
 
 
   return (
@@ -118,7 +100,7 @@ export function App() {
             year: "numeric"
           })}
           <button onClick={() => addExercise(workout.id, newExerciseForm)}>Add exercise</button>
-          <button onClick={() => deleteWorkout(workout.id)}>delete workout</button>
+          <button onClick={() => handleDeleteWorkout(workout.id)}>delete workout</button>
           <div>
             <input
               type="text"
@@ -133,22 +115,23 @@ export function App() {
 
             <input
               type="number"
-              value={newExerciseForm.reps}
+              value={newExerciseForm.sets[0].reps}
               onChange={(e) =>
                 setExerciseForm({
-                  ...newExerciseForm,
-                  reps: Number(e.target.value),
+                  ...newExerciseForm, sets: [{
+                    ...newExerciseForm.sets[0], reps: Number(e.target.value),
+                  }]
                 })
               }
             />
 
             <input
               type="number"
-              value={newExerciseForm.weight}
+              value={newExerciseForm.sets[0].weight}
               onChange={(e) =>
                 setExerciseForm({
                   ...newExerciseForm,
-                  weight: Number(e.target.value),
+                  sets: [{ ...newExerciseForm.sets[0], weight: Number(e.target.value), }]
                 })
               }
             />
