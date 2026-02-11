@@ -1,12 +1,15 @@
 import type { Workout } from "../../types/workout";
 
 export function createWorkout(): Workout {
-    const newWorkout: Workout = {
-        id: crypto.randomUUID(),
-        title: "New Workout",
-        date: new Date().toISOString(),
-        exercises: [],
-    };
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
 
-    return newWorkout;
+    return {
+        id,
+        title: "New workout",
+        date: now,
+        exercises: [],
+        notes: "",
+        createdAt: now,
+    };
 }

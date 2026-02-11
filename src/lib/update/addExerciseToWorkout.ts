@@ -1,14 +1,18 @@
-import type { Workout, Exercise } from "../../types/workout";
+import type { Workout } from "../../types/workout";
+import { createExercise } from "../factories/createExercise";
 
 export function addExerciseToWorkout(
     workouts: Workout[],
-    workoutId: string,
-    exercise: Exercise
+    workoutId: string
 ): Workout[] {
-    return workouts.map(workout => {
-        if (workout.id !== workoutId) return workout;
+    const newExercise = createExercise({ name: "" });
 
-        const updatedExercises = [...workout.exercises, exercise];
+    return workouts.map((workout) => {
+        if (workout.id !== workoutId) {
+            return workout;
+        }
+
+        const updatedExercises = [...workout.exercises, newExercise];
 
         return {
             ...workout,

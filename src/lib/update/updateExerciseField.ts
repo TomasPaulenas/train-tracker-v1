@@ -1,10 +1,14 @@
+// src/lib/update/updateExerciseField.ts
+// ESTE ARCHIVO TIENE QUE EXPORTAR "updateExerciseField" (tal cual)
+
 import type { Workout } from "../../types/workout";
 
-export function updateExerciseName(
+export function updateExerciseField(
     workouts: Workout[],
     workoutId: string,
     exerciseId: string,
-    name: string
+    field: "sets" | "reps" | "weight",
+    value: number
 ): Workout[] {
     return workouts.map((workout) => {
         if (workout.id !== workoutId) {
@@ -18,7 +22,7 @@ export function updateExerciseName(
 
             return {
                 ...exercise,
-                name,
+                [field]: value,
             };
         });
 

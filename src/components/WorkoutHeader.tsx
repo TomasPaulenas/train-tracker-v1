@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { KeyboardEvent } from "react";
 import { Field } from "./Field";
 
 type Props = {
@@ -26,67 +27,89 @@ export function WorkoutHeader({
     onAddExercise,
     onDeleteWorkout,
 }: Props) {
-    const [draftTitle, setDraftTitle] = useState("");
+    const [draftTitle, setDraftTitle] = useState(title);
 
-    // Mantiene el draft en sync cuando cambia el title (por ejemplo al abrir/cerrar o al actualizar desde arriba)
     useEffect(() => {
         setDraftTitle(title);
     }, [title]);
-
-    function handleStartEdit() {
-        setDraftTitle(title);
-        onStartEdit();
-    }
 
     function finishEdit() {
         const nextTitle = draftTitle.trim() || "Untitled workout";
         onFinishEdit(nextTitle);
     }
 
-    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    function cancelEdit() {
+        setDraftTitle(title);
+        onFinishEdit(title);
+    }
+
+    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
             finishEdit();
+            return;
+        }
+
+        if (e.key === "Escape") {
+            cancelEdit();
         }
     }
 
     return (
-        <div>
-            <div>
+        <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
                 {isEditing ? (
-                    <Field
-                        type="text"
-                        value={draftTitle}
-                        autoFocus
-                        onChange={setDraftTitle}
-                        onBlur={finishEdit}
-                        onKeyDown={handleKeyDown}
-                    />
+                    <div className="w-full">
+                        <Field
+                            type="text"
+                            value={draftTitle}
+                            autoFocus
+                            onChange={setDraftTitle}
+                            onBlur={finishEdit}
+                            onKeyDown={handleKeyDown}
+                        />
+                    </div>
                 ) : (
-                    <button type="button" onClick={onToggle}>
+                    <button
+                        type="button"
+                        onClick={onToggle}
+                        className="w-full text-left text-lg font-semibold hover:underline"
+                    >
                         {title}
                     </button>
                 )}
 
-                <div>
+                <div className="mt-1 text-sm text-zinc-300">
                     {exerciseCount} exercises · {dateLabel}
                 </div>
             </div>
 
-            <div>
+            <div className="flex shrink-0 gap-2">
                 {!isEditing && (
-                    <button type="button" onClick={handleStartEdit}>
-                        edit workout
+                    <button
+                        type="button"
+                        onClick={onStartEdit}
+                        className="rounded-md border border-zinc-700 px-3 py-1 text-sm hover:bg-zinc-800"
+                    >
+                        Edit
                     </button>
                 )}
 
                 {isOpen && (
-                    <button type="button" onClick={onAddExercise}>
-                        add exercise
+                    <button
+                        type="button"
+                        onClick={onAddExercise}
+                        className="rounded-md border border-zinc-700 px-3 py-1 text-sm hover:bg-zinc-800"
+                    >
+                        Add exercise
                     </button>
                 )}
 
-                <button type="button" onClick={onDeleteWorkout}>
-                    delete workout
+                <button
+                    type="button"
+                    onClick={onDeleteWorkout}
+                    className="rounded-md border border-zinc-700 px-3 py-1 text-sm hover:bg-zinc-800"
+                >
+                    Delete
                 </button>
             </div>
         </div>

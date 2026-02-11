@@ -6,15 +6,18 @@ export function updateWorkoutDetails(
     title?: string,
     notes?: string
 ): Workout[] {
-    return workouts.map(workout => {
+    return workouts.map((workout) => {
         if (workout.id !== workoutId) {
             return workout;
         }
 
+        const nextTitle = title !== undefined ? title : workout.title;
+        const nextNotes = notes !== undefined ? notes : workout.notes;
+
         return {
             ...workout,
-            title: title ?? workout.title,
-            notes: notes ?? workout.notes,
+            title: nextTitle,
+            notes: nextNotes,
         };
     });
 }

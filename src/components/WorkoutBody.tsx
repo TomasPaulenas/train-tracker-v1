@@ -6,9 +6,9 @@ type Props = {
     onAddExercise: () => void;
     onDeleteExercise: (exerciseId: string) => void;
     onExerciseNameChange: (exerciseId: string, name: string) => void;
-    onSetField: (
+    onExerciseFieldChange: (
         exerciseId: string,
-        field: "reps" | "weight",
+        field: "sets" | "reps" | "weight",
         value: number
     ) => void;
 };
@@ -17,54 +17,93 @@ export function WorkoutBody({
     workout,
     onDeleteExercise,
     onExerciseNameChange,
-    onSetField,
+    onExerciseFieldChange,
 }: Props) {
     return (
-        <div>
-            {workout.exercises.map(exercise => {
-                const firstSet = exercise.sets[0];
+        <div className="space-y-3">
+            {workout.exercises.map((exercise) => {
+                function handleNameChange(value: string) {
+                    onExerciseNameChange(exercise.id, value);
+                }
+
+                function handleSetsChange(value: string) {
+                    onExerciseFieldChange(exercise.id, "sets", Number(value));
+                }
+
+                function handleWeightChange(value: string) {
+                    onExerciseFieldChange(exercise.id, "weight", Number(value));
+                }
+
+                function handleRepsChange(value: string) {
+                    onExerciseFieldChange(exercise.id, "reps", Number(value));
+                }
+
+                function handleDelete() {
+                    onDeleteExercise(exercise.id);
+                }
 
                 return (
                     <div
                         key={exercise.id}
-                        style={{ display: "flex", gap: 12, alignItems: "flex-end" }}
+                        className="grid grid-cols-12 gap-3 items-end"
                     >
-                        <div>
-                            <div>Exercise</div>
-                            <Field
-                                type="text"
-                                value={exercise.name}
-                                onChange={(value) => onExerciseNameChange(exercise.id, value)}
-                            />
+                        <div className="col-span-5">
+                            <div className="mb-1 text-sm text-zinc-300">Exercise</div>
+                            <div className="w-full">
+                                <Field
+                                    type="text"
+                                    value={exercise.name}
+                                    onChange={handleNameChange}
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <div>Weight</div>
-                            <Field
-                                type="number"
-                                min={0}
-                                value={firstSet.weight === 0 ? "" : firstSet.weight}
-                                onChange={(value) =>
-                                    onSetField(exercise.id, "weight", Number(value))
-                                }
-                            />
+                        <div className="col-span-2">
+                            <div className="mb-1 text-sm text-zinc-300">Sets</div>
+                            <div className="w-full">
+                                <Field
+                                    type="number"
+                                    min={0}
+                                    value={exercise.sets}
+                                    onChange={handleSetsChange}
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <div>Reps</div>
-                            <Field
-                                type="number"
-                                min={0}
-                                value={firstSet.reps === 0 ? "" : firstSet.reps}
-                                onChange={(value) =>
-                                    onSetField(exercise.id, "reps", Number(value))
-                                }
-                            />
+                        <div className="col-span-2">
+                            <div className="mb-1 text-sm text-zinc-300">Weight</div>
+                            <div className="w-full">
+                                <Field
+                                    type="number"
+                                    min={0}
+                                    value={exercise.weight === 0 ? "" : exercise.weight}
+                                    onChange={handleWeightChange}
+                                />
+                            </div>
                         </div>
 
-                        <button type="button" onClick={() => onDeleteExercise(exercise.id)}>
-                            delete
-                        </button>
+                        <div className="col-span-2">
+                            <div className="mb-1 text-sm text-zinc-300">Reps</div>
+                            <div className="w-full">
+                                <Field
+                                    type="number"
+                                    min={0}
+                                    value={exercise.reps === 0 ? "" : exercise.reps}
+                                    onChange={handleRepsChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="col-span-1 relative">
+                            <button
+                                type="button"
+                                onClick={handleDelete}
+                                className="h-10 w-full rounded-md border border-zinc-700 text-sm hover:bg-zinc-800 relative z-20"
+                            >
+                                Delete
+                            </button>
+                        </div>
+
                     </div>
                 );
             })}

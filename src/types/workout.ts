@@ -2,14 +2,8 @@
  * Workout
  * -------
  * Represents a training session.
- * It corresponds to a specific day when the user trained.
- * It is created when a workout session is started or logged.
- * A workout can exist even if no exercises have been added yet.
- * It is used to list training sessions and later view their details.
- * This version (v1) does not include statistics or calculations.
+ * This version (v1) stores aggregated exercise data (sets/reps/weight).
  */
-
-
 
 export type Workout = {
     id: string;
@@ -23,8 +17,9 @@ export type Workout = {
 export type Exercise = {
     id: string;
     name: string;
-    sets: Set[];
 
+    // v1: aggregated fields
+    sets: number;
+    reps: number;
+    weight: number;
 };
-
-export type Set = { reps: number; weight: number };

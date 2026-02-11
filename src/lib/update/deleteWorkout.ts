@@ -4,5 +4,9 @@ export function deleteWorkout(
     workouts: Workout[],
     workoutId: string
 ): Workout[] {
-    return workouts.filter(workout => workout.id !== workoutId);
+    const remainingWorkouts = workouts.filter(
+        (workout) => workout.id !== workoutId
+    );
+
+    return remainingWorkouts;
 }

@@ -5,16 +5,18 @@ export function removeExerciseFromWorkout(
     workoutId: string,
     exerciseId: string
 ): Workout[] {
-    return workouts.map(workout => {
-        if (workout.id !== workoutId) return workout;
+    return workouts.map((workout) => {
+        if (workout.id !== workoutId) {
+            return workout;
+        }
 
-        const updatedExercises = workout.exercises.filter(
-            exercise => exercise.id !== exerciseId
+        const remainingExercises = workout.exercises.filter(
+            (exercise) => exercise.id !== exerciseId
         );
 
         return {
             ...workout,
-            exercises: updatedExercises,
+            exercises: remainingExercises,
         };
     });
 }

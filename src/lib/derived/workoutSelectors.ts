@@ -1,14 +1,16 @@
 import type { Workout } from "../../types/workout";
 
-export function getWorkoutTotals(
-    workouts: Workout[]
-): { totalWorkouts: number; totalExercises: number } {
+export function getWorkoutTotals(workouts: Workout[]) {
     const totalWorkouts = workouts.length;
 
-    const totalExercises = workouts.reduce(
-        (total, workout) => total + workout.exercises.length,
-        0
-    );
+    let totalExercises = 0;
 
-    return { totalWorkouts, totalExercises };
+    for (const workout of workouts) {
+        totalExercises += workout.exercises.length;
+    }
+
+    return {
+        totalWorkouts,
+        totalExercises,
+    };
 }
