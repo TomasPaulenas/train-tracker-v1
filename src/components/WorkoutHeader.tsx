@@ -59,7 +59,7 @@ export function WorkoutHeader({
     }
 
     return (
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex-1 min-w-0">
                 {isEditing ? (
                     <div className="w-full">
@@ -102,7 +102,7 @@ export function WorkoutHeader({
                 )}
             </div>
 
-            <div className="flex shrink-0 gap-2">
+            <div className="flex flex-wrap gap-2 sm:justify-end">
                 {!isEditing && (
                     <button
                         type="button"
@@ -110,7 +110,7 @@ export function WorkoutHeader({
                             stop(e);
                             onStartEdit();
                         }}
-                        className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+                        className="w-full sm:w-auto rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 whitespace-nowrap"
                     >
                         Edit
                     </button>
@@ -122,7 +122,7 @@ export function WorkoutHeader({
                         stop(e);
                         onDeleteWorkout();
                     }}
-                    className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+                    className="w-full sm:w-auto rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 whitespace-nowrap"
                 >
                     Delete
                 </button>
@@ -134,7 +134,7 @@ export function WorkoutHeader({
                             stop(e);
                             onAddExercise();
                         }}
-                        className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
+                        className="w-full sm:w-auto rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 whitespace-nowrap"
                     >
                         Add exercise
                     </button>
