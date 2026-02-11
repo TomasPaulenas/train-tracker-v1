@@ -61,7 +61,7 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-4 md:col-span-2">
+                            <div className="col-span-12 sm:col-span-4 md:col-span-2">
                                 <div className="mb-1 text-sm font-medium text-zinc-700">
                                     Sets
                                 </div>
@@ -74,7 +74,7 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-4 md:col-span-2">
+                            <div className="col-span-12 sm:col-span-4 md:col-span-2">
                                 <div className="mb-1 text-sm font-medium text-zinc-700">
                                     Weight
                                 </div>
@@ -87,7 +87,7 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-4 md:col-span-2">
+                            <div className="col-span-12 sm:col-span-4 md:col-span-2">
                                 <div className="mb-1 text-sm font-medium text-zinc-700">
                                     Reps
                                 </div>
@@ -100,11 +100,11 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-12 md:col-span-1">
+                            <div className="col-span-12 sm:col-span-4 md:col-span-1">
                                 <button
                                     type="button"
                                     onClick={handleDelete}
-                                    className="h-10 w-full rounded-md border border-zinc-300 bg-white text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+                                    className="h-10 w-full rounded-md border border-zinc-300 bg-white text-sm font-medium text-zinc-900 hover:bg-zinc-50 whitespace-nowrap"
                                 >
                                     Delete
                                 </button>
