@@ -6,7 +6,7 @@ export function createWorkout(): Workout {
 
     return {
         id,
-        title: "New workout",
+        title: "New Workout",
         date: now,
         exercises: [],
         notes: "",

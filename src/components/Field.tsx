@@ -11,10 +11,17 @@ export function Field({ value, onChange, className, ...rest }: Props) {
     }
 
     const base =
-        "w-full h-10 rounded-md border border-zinc-700 bg-zinc-900 px-3 text-zinc-100 " +
-        "placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600";
+        "w-full h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 " +
+        "placeholder:text-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20";
 
     const nextClassName = className ? `${base} ${className}` : base;
 
-    return <input {...rest} value={value} onChange={handleChange} className={nextClassName} />;
+    return (
+        <input
+            {...rest}
+            value={value}
+            onChange={handleChange}
+            className={nextClassName}
+        />
+    );
 }

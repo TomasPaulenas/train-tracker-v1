@@ -1,98 +1,77 @@
-# React + TypeScript + Vite
+# TrainTracker — v1
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TrainTracker is a minimalist workout tracking application built with React and TypeScript.
 
-Currently, two official plugins are available:
+The project emphasizes predictable immutable updates and clear separation between UI and domain logic.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✨ Features
 
-## React Compiler
+Create and delete workout sessions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Add and remove exercises
 
-## Expanding the ESLint configuration
+Update sets, reps and weight
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+LocalStorage persistence
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Derived statistics (total sessions, total exercises)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Fully tested domain logic (Vitest)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🧠 Architecture
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The project separates:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+UI components
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
----
+Domain update functions (pure functions)
 
-## Train Tracker — v0.1
+Factories
 
-Simple workout tracking app built with React, TypeScript and Vite.
+Derived selectors
 
-### Features
-- Create and delete workouts
-- Add exercises to workouts
-- LocalStorage persistence
-- Derived state handling
+Custom hooks
 
-### Deploy
-👉 https://TU-LINK-DE-VERCEL
+Persistence layer
 
-### Known issues (v0.1)
-- Exercise form state is shared across workouts; will be isolated per workout in the next iteration.
+All domain logic is tested independently from the UI.
 
-## Persistence strategy
+🧪 Testing
 
-This app persists the full `workouts` state (workouts and their nested exercises) in `localStorage`.
+The core logic is covered with unit tests using Vitest.
 
-- Load: on app start (first render), we read `localStorage.getItem("workouts")`. If it’s missing or invalid JSON, we fall back to an empty list.
-- Save: after hydration, every change to `workouts` triggers a save to `localStorage` (create workout, delete workout, add exercise).
-- Goal: keep the UI state in sync with local storage without overwriting stored data before the initial load completes.
+Run tests with:
+
+npm run test
+
+💾 Persistence Strategy
+
+The application persists the full workouts state in localStorage.
+
+On app start, stored data is hydrated safely
+
+On state updates, changes are persisted
+
+A hydration guard prevents overwriting stored data before the initial load completes
+
+📦 Tech Stack
+
+React
+
+TypeScript
+
+Vite
+
+TailwindCSS
+
+Vitest
+
+🗺 Roadmap
+
+Isolate exercise form state per workout
+
+Improve UX animations
+
+Optional backend sync
+
+Export workouts to JSON
