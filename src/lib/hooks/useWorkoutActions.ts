@@ -55,6 +55,7 @@ export function useWorkoutActions({
             setAuthMode("login");
         } catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -65,6 +66,7 @@ export function useWorkoutActions({
             setIsAuthenticated(true);
         } catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
