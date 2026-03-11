@@ -12,7 +12,6 @@ describe("updateExerciseField", () => {
             {
                 id: "w1",
                 title: "Workout 1",
-                notes: "",
                 date: "2024-01-01",
                 exercises: [ex1, ex2],
             },
@@ -39,7 +38,6 @@ describe("updateExerciseField", () => {
             {
                 id: "w1",
                 title: "Workout 1",
-                notes: "",
                 date: "2024-01-01",
                 exercises: [ex1],
             },

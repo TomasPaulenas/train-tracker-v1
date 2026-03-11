@@ -12,14 +12,12 @@ describe("removeExerciseFromWorkout", () => {
             {
                 id: "1",
                 title: "Workout 1",
-                notes: "",
                 date: "2024-01-01",
                 exercises: [ex1, ex2],
             },
             {
                 id: "2",
                 title: "Workout 2",
-                notes: "",
                 date: "2024-01-02",
                 exercises: [],
             },
@@ -31,7 +29,7 @@ describe("removeExerciseFromWorkout", () => {
         expect(result[0].exercises).toHaveLength(1);
         expect(result[0].exercises[0].id).toBe(ex2.id);
 
-        
+        // original array is not mutated
         expect(workouts[0].exercises).toHaveLength(2);
     });
 
@@ -42,7 +40,6 @@ describe("removeExerciseFromWorkout", () => {
             {
                 id: "1",
                 title: "Workout 1",
-                notes: "",
                 date: "2024-01-01",
                 exercises: [ex1],
             },
@@ -53,6 +50,7 @@ describe("removeExerciseFromWorkout", () => {
         expect(result).toHaveLength(1);
         expect(result[0].exercises).toHaveLength(1);
 
+        // original array is not mutated
         expect(workouts[0].exercises).toHaveLength(1);
     });
 });

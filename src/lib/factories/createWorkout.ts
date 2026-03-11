@@ -9,7 +9,6 @@ export function createWorkout(): Workout {
         title: "New Workout",
         date: now,
         exercises: [],
-        notes: "",
         createdAt: now,
     };
 }

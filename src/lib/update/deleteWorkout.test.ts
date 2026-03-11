@@ -8,14 +8,12 @@ describe("deleteWorkout", () => {
             {
                 id: "1",
                 title: "Workout 1",
-                notes: "note",
                 date: "2024-01-01",
                 exercises: [],
             },
             {
                 id: "2",
                 title: "Workout 2",
-                notes: "nota",
                 date: "2024-01-02",
                 exercises: [],
             },

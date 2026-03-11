@@ -8,7 +8,6 @@ describe("addWorkout", () => {
             {
                 id: "1",
                 title: "Workout 1",
-                notes: "note",
                 date: "2024-01-01",
                 exercises: [],
             },
@@ -17,7 +16,6 @@ describe("addWorkout", () => {
         const newWorkout: Workout = {
             id: "2",
             title: "Workout 2",
-            notes: "note 2",
             date: "2024-01-02",
             exercises: [],
         };
@@ -37,7 +35,6 @@ describe("addWorkout", () => {
         const newWorkout: Workout = {
             id: "1",
             title: "Workout 1",
-            notes: "",
             date: "2024-01-01",
             exercises: [],
         };
