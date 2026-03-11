@@ -65,6 +65,6 @@ export async function registerUser(data: AuthData) {
 export async function loginDemoUser(): Promise<LoginResponse> {
     return loginUser({
         email: "test@traintracker.com",
-        password: "123456",
+        password: "123456789",
     });
 }
