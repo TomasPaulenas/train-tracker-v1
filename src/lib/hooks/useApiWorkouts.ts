@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Workout } from "../../types/workout";
 
-const API_URL = "http://localhost:4000/api/workouts";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/workouts`;
 const AUTH_KEY = "traintracker-auth";
 
 export function useApiWorkouts(isAuthenticated: boolean) {
