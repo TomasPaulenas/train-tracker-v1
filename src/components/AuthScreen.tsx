@@ -6,7 +6,7 @@ type AuthMode = "login" | "register";
 type Props = {
     mode: AuthMode;
     onModeChange: (mode: AuthMode) => void;
-    onSubmit: (data: { email: string; password: string }) => void;
+    onSubmit: (data: { email: string; password: string }) => Promise<void>;
     onDemoLogin: () => void;
 };
 
@@ -20,24 +20,34 @@ export function AuthScreen({
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const id = window.setTimeout(() => setReady(true), 20);
         return () => window.clearTimeout(id);
     }, []);
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setError(null);
 
         if (mode === "register" && password !== confirmPassword) {
-            alert("Passwords do not match");
+            setError("Passwords do not match");
             return;
         }
 
-        onSubmit({
-            email: email.trim(),
-            password,
-        });
+        try {
+            await onSubmit({
+                email: email.trim(),
+                password,
+            });
+        } catch {
+            setError(
+                mode === "login"
+                    ? "Invalid email or password"
+                    : "Could not create account"
+            );
+        }
     }
 
     const wrapClass = [
@@ -113,6 +123,10 @@ export function AuthScreen({
                                 </div>
                             )}
 
+                            {error && (
+                                <p className="text-sm text-red-600">{error}</p>
+                            )}
+
                             <button
                                 type="submit"
                                 className="inline-flex h-11 w-full items-center justify-center rounded-md bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 active:scale-[0.99] transition"
@@ -122,7 +136,9 @@ export function AuthScreen({
                         </form>
 
                         <div className="mt-5 text-sm text-zinc-600">
-                            {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
+                            {mode === "login"
+                                ? "Don't have an account?"
+                                : "Already have an account?"}{" "}
                             <button
                                 type="button"
                                 onClick={() =>
