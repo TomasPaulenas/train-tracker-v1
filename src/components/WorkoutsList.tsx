@@ -20,13 +20,19 @@ type Props = {
     onExerciseNameChange: (
         workoutId: string,
         exerciseId: string,
-        name: string
+        name: string,
     ) => void;
     onExerciseFieldChange: (
         workoutId: string,
         exerciseId: string,
         field: "sets" | "reps" | "weight",
         value: number
+    ) => void;
+
+    onExerciseNotesChange: (
+        workoutId: string,
+        exerciseId: string,
+        notes: string
     ) => void;
 };
 
@@ -43,6 +49,7 @@ export function WorkoutsList({
     onDeleteExercise,
     onExerciseNameChange,
     onExerciseFieldChange,
+    onExerciseNotesChange,
 }: Props) {
     return (
         <div className="space-y-4">
@@ -87,6 +94,9 @@ export function WorkoutsList({
                                     }
                                     onExerciseFieldChange={(exerciseId, field, value) =>
                                         onExerciseFieldChange(workout.id, exerciseId, field, value)
+                                    }
+                                    onExerciseNotesChange={(exerciseId, notes) =>
+                                        onExerciseNotesChange(workout.id, exerciseId, notes)
                                     }
                                 />
                             </div>

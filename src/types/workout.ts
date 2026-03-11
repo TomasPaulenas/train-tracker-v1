@@ -10,16 +10,14 @@ export type Workout = {
     date: string;
     title: string;
     exercises: Exercise[];
-    notes?: string;
     createdAt?: string;
 };
 
 export type Exercise = {
     id: string;
     name: string;
-
-    // v1: aggregated fields
     sets: number;
     reps: number;
     weight: number;
+    notes?: string;
 };

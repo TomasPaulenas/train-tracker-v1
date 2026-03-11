@@ -1,25 +1,16 @@
 import { useState } from "react";
-import { usePersistedWorkouts } from "./lib/hooks/usePersistedWorkouts";
+import { useApiWorkouts } from "./lib/hooks/useApiWorkouts";
 import { useWelcomeFlow } from "./lib/hooks/useWelcomeFlow";
-import { createWorkout } from "./lib/factories/createWorkout";
+import { useWorkoutActions } from "./lib/hooks/useWorkoutActions";
+import { hasAuthToken } from "./lib/api/auth";
 import { getWorkoutTotals } from "./lib/derived/workoutSelectors";
 import { getDateLabel } from "./lib/format/getDateLabel";
-import {
-  addWorkout,
-  deleteWorkout,
-  addExerciseToWorkout,
-  removeExerciseFromWorkout,
-  updateWorkoutDetails,
-  updateExerciseName,
-  updateExerciseField,
-} from "./lib/workoutsModel";
 import { WelcomeScreen } from "./components/WelcomeScreen";
 import { StartTransitionScreen } from "./components/StartTransitionScreen";
+import { AuthScreen } from "./components/AuthScreen";
 import { WorkoutsList } from "./components/WorkoutsList";
 
 export function App() {
-  const { workouts, setWorkouts, hydrated } = usePersistedWorkouts();
-
   const {
     started,
     leavingWelcome,
@@ -31,56 +22,32 @@ export function App() {
 
   const [openWorkoutId, setOpenWorkoutId] = useState<string | null>(null);
   const [editingWorkoutId, setEditingWorkoutId] = useState<string | null>(null);
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => hasAuthToken());
 
-  function toggleWorkout(id: string) {
-    setOpenWorkoutId((prev) => (prev === id ? null : id));
-    setEditingWorkoutId(null);
-  }
+  const { workouts, setWorkouts, hydrated } = useApiWorkouts(isAuthenticated);
 
-  function handleAddWorkout() {
-    const newWorkout = createWorkout();
-    setWorkouts((prev) => addWorkout(prev, newWorkout));
-  }
-
-  function handleDeleteWorkout(id: string) {
-    setWorkouts((prev) => deleteWorkout(prev, id));
-    setOpenWorkoutId((prev) => (prev === id ? null : prev));
-    setEditingWorkoutId((prev) => (prev === id ? null : prev));
-  }
-
-  function handleAddExercise(workoutId: string) {
-    setWorkouts((prev) => addExerciseToWorkout(prev, workoutId));
-  }
-
-  function handleDeleteExercise(workoutId: string, exerciseId: string) {
-    setWorkouts((prev) =>
-      removeExerciseFromWorkout(prev, workoutId, exerciseId)
-    );
-  }
-
-  function handleFinishEdit(workoutId: string, title: string) {
-    setWorkouts((prev) => updateWorkoutDetails(prev, workoutId, title));
-    setEditingWorkoutId(null);
-  }
-
-  function handleExerciseNameChange(
-    workoutId: string,
-    exerciseId: string,
-    name: string
-  ) {
-    setWorkouts((prev) => updateExerciseName(prev, workoutId, exerciseId, name));
-  }
-
-  function handleExerciseFieldChange(
-    workoutId: string,
-    exerciseId: string,
-    field: "sets" | "reps" | "weight",
-    value: number
-  ) {
-    setWorkouts((prev) =>
-      updateExerciseField(prev, workoutId, exerciseId, field, value)
-    );
-  }
+  const {
+    toggleWorkout,
+    handleAuthSubmit,
+    handleDemoLogin,
+    handleLogout,
+    handleAddWorkout,
+    handleDeleteWorkout,
+    handleFinishEdit,
+    handleAddExercise,
+    handleDeleteExercise,
+    handleExerciseNameChange,
+    handleExerciseFieldChange,
+    handleExerciseNotesChange,
+  } = useWorkoutActions({
+    authMode,
+    setAuthMode,
+    setIsAuthenticated,
+    setWorkouts,
+    setOpenWorkoutId,
+    setEditingWorkoutId,
+  });
 
   if (!started) {
     if (showTransition) {
@@ -98,11 +65,21 @@ export function App() {
     );
   }
 
+  if (!isAuthenticated) {
+    return (
+      <AuthScreen
+        mode={authMode}
+        onModeChange={setAuthMode}
+        onSubmit={handleAuthSubmit}
+        onDemoLogin={handleDemoLogin}
+      />
+    );
+  }
+
   const { totalWorkouts, totalExercises } = getWorkoutTotals(workouts);
 
   return (
     <div className="relative min-h-screen bg-white text-zinc-900 overflow-hidden">
-      {/* background (dots + soft color corners) */}
       <div className="pointer-events-none absolute inset-0">
         <div
           className={[
@@ -115,7 +92,6 @@ export function App() {
         <div className="absolute inset-0 bg-[radial-gradient(800px_520px_at_0%_100%,rgba(251,191,36,0.16),transparent_60%)]" />
       </div>
 
-      {/* fixed bottom-right hero image */}
       <div className="pointer-events-none fixed bottom-0 right-0 z-0">
         <img
           src="/tracker-img.png"
@@ -132,8 +108,6 @@ export function App() {
         />
       </div>
 
-
-      {/* content */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 py-10">
         <div className="mb-8">
           <div className="flex items-center justify-between gap-4">
@@ -147,6 +121,13 @@ export function App() {
             </div>
 
             <div className="flex shrink-0 items-center gap-2">
+              <button
+                onClick={handleLogout}
+                className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+              >
+                Logout
+              </button>
+
               {import.meta.env.DEV && (
                 <button
                   onClick={reset}
@@ -179,6 +160,7 @@ export function App() {
           onDeleteExercise={handleDeleteExercise}
           onExerciseNameChange={handleExerciseNameChange}
           onExerciseFieldChange={handleExerciseFieldChange}
+          onExerciseNotesChange={handleExerciseNotesChange}
         />
       </div>
     </div>

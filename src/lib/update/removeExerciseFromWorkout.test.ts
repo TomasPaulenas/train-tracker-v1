@@ -31,7 +31,7 @@ describe("removeExerciseFromWorkout", () => {
         expect(result[0].exercises).toHaveLength(1);
         expect(result[0].exercises[0].id).toBe(ex2.id);
 
-        // original not mutated
+        
         expect(workouts[0].exercises).toHaveLength(2);
     });
 

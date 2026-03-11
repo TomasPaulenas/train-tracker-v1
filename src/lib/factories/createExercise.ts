@@ -10,5 +10,6 @@ export function createExercise(draft: ExerciseDraft): Exercise {
         sets: 0,
         reps: 0,
         weight: 0,
+        notes: "",
     };
 }

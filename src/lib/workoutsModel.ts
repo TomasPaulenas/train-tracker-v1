@@ -7,4 +7,5 @@ export { removeExerciseFromWorkout } from "./update/removeExerciseFromWorkout";
 export { updateWorkoutDetails } from "./update/updateWorkout";
 export { updateExerciseName } from "./update/updateExerciseName";
 export { updateExerciseField } from "./update/updateExerciseField"
+export { updateExerciseNotes } from "./update/updateExerciseNotes";
 

@@ -1,3 +1,4 @@
+import type { ChangeEvent } from "react";
 import type { Workout } from "../types/workout";
 import { Field } from "./Field";
 
@@ -11,6 +12,7 @@ type Props = {
         field: "sets" | "reps" | "weight",
         value: number
     ) => void;
+    onExerciseNotesChange: (exerciseId: string, notes: string) => void;
 };
 
 export function WorkoutBody({
@@ -18,6 +20,7 @@ export function WorkoutBody({
     onDeleteExercise,
     onExerciseNameChange,
     onExerciseFieldChange,
+    onExerciseNotesChange,
 }: Props) {
     return (
         <div className="space-y-5">
@@ -36,6 +39,10 @@ export function WorkoutBody({
 
                 function handleRepsChange(value: string) {
                     onExerciseFieldChange(exercise.id, "reps", Number(value));
+                }
+
+                function handleNotesChange(event: ChangeEvent<HTMLTextAreaElement>) {
+                    onExerciseNotesChange(exercise.id, event.target.value);
                 }
 
                 function handleDelete() {
@@ -61,7 +68,7 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-12 sm:col-span-4 md:col-span-2">
+                            <div className="col-span-4 md:col-span-2">
                                 <div className="mb-1 text-sm font-medium text-zinc-700">
                                     Sets
                                 </div>
@@ -74,7 +81,7 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-12 sm:col-span-4 md:col-span-2">
+                            <div className="col-span-4 md:col-span-2">
                                 <div className="mb-1 text-sm font-medium text-zinc-700">
                                     Weight
                                 </div>
@@ -87,7 +94,7 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-12 sm:col-span-4 md:col-span-2">
+                            <div className="col-span-4 md:col-span-2">
                                 <div className="mb-1 text-sm font-medium text-zinc-700">
                                     Reps
                                 </div>
@@ -100,15 +107,26 @@ export function WorkoutBody({
                                 />
                             </div>
 
-                            <div className="col-span-12 sm:col-span-4 md:col-span-1">
+                            <div className="col-span-12 md:col-span-1">
                                 <button
                                     type="button"
                                     onClick={handleDelete}
-                                    className="h-10 w-full rounded-md border border-zinc-300 bg-white text-sm font-medium text-zinc-900 hover:bg-zinc-50 whitespace-nowrap"
+                                    className="h-10 w-full rounded-md border border-zinc-300 bg-white text-sm font-medium text-zinc-900 hover:bg-zinc-50"
                                 >
                                     Delete
                                 </button>
                             </div>
+                        </div>
+
+                        <div className="mt-3">
+                            <div className="mb-1 text-sm font-medium text-zinc-700">Notes</div>
+                            <textarea
+                                value={exercise.notes ?? ""}
+                                onChange={handleNotesChange}
+                                placeholder="Optional notes..."
+                                rows={3}
+                                className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 resize-none"
+                            />
                         </div>
                     </div>
                 );
