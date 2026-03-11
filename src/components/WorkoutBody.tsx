@@ -23,6 +23,30 @@ type ExerciseDraft = {
     notes: string;
 };
 
+function formatNumberField(value: number | null | undefined) {
+    if (value == null || value === 0) {
+        return "";
+    }
+
+    return String(value);
+}
+
+function buildDrafts(workout: Workout): Record<string, ExerciseDraft> {
+    const nextDrafts: Record<string, ExerciseDraft> = {};
+
+    for (const exercise of workout.exercises) {
+        nextDrafts[exercise.id] = {
+            name: exercise.name ?? "",
+            sets: formatNumberField(exercise.sets),
+            reps: formatNumberField(exercise.reps),
+            weight: formatNumberField(exercise.weight),
+            notes: exercise.notes ?? "",
+        };
+    }
+
+    return nextDrafts;
+}
+
 export function WorkoutBody({
     workout,
     onDeleteExercise,
@@ -30,43 +54,25 @@ export function WorkoutBody({
     onExerciseFieldChange,
     onExerciseNotesChange,
 }: Props) {
-    const [drafts, setDrafts] = useState<Record<string, ExerciseDraft>>({});
+    const [drafts, setDrafts] = useState<Record<string, ExerciseDraft>>(() =>
+        buildDrafts(workout)
+    );
 
     useEffect(() => {
         setDrafts((prev) => {
-            const next = { ...prev };
+            const next = buildDrafts(workout);
 
             for (const exercise of workout.exercises) {
-                next[exercise.id] = {
-                    name: prev[exercise.id]?.name ?? exercise.name ?? "",
-                    sets:
-                        prev[exercise.id]?.sets ??
-                        (exercise.sets === 0 ? "" : String(exercise.sets)),
-                    reps:
-                        prev[exercise.id]?.reps ??
-                        (exercise.reps == null || exercise.reps === 0
-                            ? ""
-                            : String(exercise.reps)),
-                    weight:
-                        prev[exercise.id]?.weight ??
-                        (exercise.weight == null || exercise.weight === 0
-                            ? ""
-                            : String(exercise.weight)),
-                    notes: prev[exercise.id]?.notes ?? exercise.notes ?? "",
-                };
-            }
+                const existingDraft = prev[exercise.id];
 
-            for (const draftId of Object.keys(next)) {
-                const exists = workout.exercises.some((exercise) => exercise.id === draftId);
-
-                if (!exists) {
-                    delete next[draftId];
+                if (existingDraft) {
+                    next[exercise.id] = existingDraft;
                 }
             }
 
             return next;
         });
-    }, [workout.exercises]);
+    }, [workout]);
 
     function updateDraft(
         exerciseId: string,
@@ -76,60 +82,56 @@ export function WorkoutBody({
         setDrafts((prev) => ({
             ...prev,
             [exerciseId]: {
-                ...prev[exerciseId],
+                ...(prev[exerciseId] ?? {
+                    name: "",
+                    sets: "",
+                    reps: "",
+                    weight: "",
+                    notes: "",
+                }),
                 [field]: value,
             },
         }));
     }
 
-    function getExerciseNumberAsString(value: number | null | undefined) {
-        if (value == null || value === 0) {
-            return "";
-        }
+    function commitName(exerciseId: string, draftValue: string, currentValue: string) {
+        const trimmedValue = draftValue.trim();
 
-        return String(value);
-    }
-
-    function commitTextField(
-        exerciseId: string,
-        field: "name" | "notes",
-        draftValue: string,
-        serverValue: string
-    ) {
-        if (draftValue === serverValue) {
+        if (!trimmedValue) {
+            setDrafts((prev) => ({
+                ...prev,
+                [exerciseId]: {
+                    ...prev[exerciseId],
+                    name: currentValue,
+                },
+            }));
             return;
         }
 
-        if (field === "name") {
-            const trimmedName = draftValue.trim();
+        if (trimmedValue === currentValue) {
+            return;
+        }
 
-            if (!trimmedName) {
-                setDrafts((prev) => ({
-                    ...prev,
-                    [exerciseId]: {
-                        ...prev[exerciseId],
-                        name: serverValue,
-                    },
-                }));
-                return;
-            }
+        onExerciseNameChange(exerciseId, trimmedValue);
+    }
 
-            onExerciseNameChange(exerciseId, trimmedName);
+    function commitNotes(exerciseId: string, draftValue: string, currentValue: string) {
+        if (draftValue === currentValue) {
             return;
         }
 
         onExerciseNotesChange(exerciseId, draftValue);
     }
 
-    function commitNumberField(
+    function commitNumber(
         exerciseId: string,
         field: "sets" | "reps" | "weight",
         draftValue: string,
-        serverValue: number | null | undefined
+        currentValue: number | null | undefined
     ) {
-        const normalizedServerValue = getExerciseNumberAsString(serverValue);
+        const currentAsString = formatNumberField(currentValue);
 
-        if (draftValue === normalizedServerValue) {
+        if (draftValue === currentAsString) {
             return;
         }
 
@@ -145,7 +147,7 @@ export function WorkoutBody({
                 ...prev,
                 [exerciseId]: {
                     ...prev[exerciseId],
-                    [field]: normalizedServerValue,
+                    [field]: currentAsString,
                 },
             }));
             return;
@@ -157,50 +159,32 @@ export function WorkoutBody({
     return (
         <div className="space-y-5">
             {workout.exercises.map((exercise) => {
-                const draft = drafts[exercise.id];
-
-                if (!draft) {
-                    return null;
-                }
+                const draft = drafts[exercise.id] ?? {
+                    name: exercise.name ?? "",
+                    sets: formatNumberField(exercise.sets),
+                    reps: formatNumberField(exercise.reps),
+                    weight: formatNumberField(exercise.weight),
+                    notes: exercise.notes ?? "",
+                };
 
                 function handleDelete() {
                     onDeleteExercise(exercise.id);
                 }
 
                 function handleNameBlur() {
-                    commitTextField(
-                        exercise.id,
-                        "name",
-                        draft.name,
-                        exercise.name ?? ""
-                    );
+                    commitName(exercise.id, draft.name, exercise.name ?? "");
                 }
 
                 function handleSetsBlur() {
-                    commitNumberField(
-                        exercise.id,
-                        "sets",
-                        draft.sets,
-                        exercise.sets
-                    );
+                    commitNumber(exercise.id, "sets", draft.sets, exercise.sets);
                 }
 
                 function handleWeightBlur() {
-                    commitNumberField(
-                        exercise.id,
-                        "weight",
-                        draft.weight,
-                        exercise.weight
-                    );
+                    commitNumber(exercise.id, "weight", draft.weight, exercise.weight);
                 }
 
                 function handleRepsBlur() {
-                    commitNumberField(
-                        exercise.id,
-                        "reps",
-                        draft.reps,
-                        exercise.reps
-                    );
+                    commitNumber(exercise.id, "reps", draft.reps, exercise.reps);
                 }
 
                 function handleNotesChange(event: ChangeEvent<HTMLTextAreaElement>) {
@@ -208,12 +192,7 @@ export function WorkoutBody({
                 }
 
                 function handleNotesBlur() {
-                    commitTextField(
-                        exercise.id,
-                        "notes",
-                        draft.notes,
-                        exercise.notes ?? ""
-                    );
+                    commitNotes(exercise.id, draft.notes, exercise.notes ?? "");
                 }
 
                 return (
@@ -303,7 +282,7 @@ export function WorkoutBody({
                                 onBlur={handleNotesBlur}
                                 placeholder="Optional notes..."
                                 rows={3}
-                                className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 resize-none"
+                                className="w-full resize-none rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
                             />
                         </div>
                     </div>
