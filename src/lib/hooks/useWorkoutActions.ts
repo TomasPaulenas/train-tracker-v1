@@ -78,7 +78,6 @@ export function useWorkoutActions({
     async function handleAddWorkout() {
         try {
             const newWorkout = await createWorkoutRequest();
-
             setWorkouts((prev) => [newWorkout, ...prev]);
         } catch (error) {
             console.log(error);
@@ -187,7 +186,7 @@ export function useWorkoutActions({
 
                             return {
                                 ...exercise,
-                                name: updatedExercise.name,
+                                ...updatedExercise,
                             };
                         }),
                     };
@@ -224,9 +223,7 @@ export function useWorkoutActions({
 
                             return {
                                 ...exercise,
-                                sets: updatedExercise.sets ?? 0,
-                                reps: updatedExercise.reps ?? 0,
-                                weight: updatedExercise.weight ?? 0,
+                                ...updatedExercise,
                             };
                         }),
                     };
@@ -260,7 +257,7 @@ export function useWorkoutActions({
 
                             return {
                                 ...exercise,
-                                notes: updatedExercise.notes ?? "",
+                                ...updatedExercise,
                             };
                         }),
                     };
