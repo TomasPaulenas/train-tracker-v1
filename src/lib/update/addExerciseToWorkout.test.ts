@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { addExerciseToWorkout } from "./addExerciseToWorkout";
-import type { Workout } from "../../types/workout";
+import type { Exercise, Workout } from "../../types/workout";
 
 describe("addExerciseToWorkout", () => {
     it("adds a new exercise to the workout with the given id", () => {
@@ -19,12 +19,22 @@ describe("addExerciseToWorkout", () => {
             },
         ];
 
-        const result = addExerciseToWorkout(workouts, "2");
+        const exercise: Exercise = {
+            id: "ex-1",
+            name: "Bench Press",
+            sets: 3,
+            reps: 10,
+            weight: 60,
+            notes: "",
+
+        };
+
+        const result = addExerciseToWorkout(workouts, "2", exercise);
 
         expect(result[1].exercises).toHaveLength(1);
+        expect(result[1].exercises[0]).toEqual(exercise);
         expect(result[0].exercises).toHaveLength(0);
 
-        // original array is not mutated
         expect(workouts[1].exercises).toHaveLength(0);
     });
 
@@ -38,7 +48,17 @@ describe("addExerciseToWorkout", () => {
             },
         ];
 
-        const result = addExerciseToWorkout(workouts, "999");
+        const exercise: Exercise = {
+            id: "ex-1",
+            name: "Bench Press",
+            sets: 3,
+            reps: 10,
+            weight: 60,
+            notes: "",
+
+        };
+
+        const result = addExerciseToWorkout(workouts, "999", exercise);
 
         expect(result).toHaveLength(1);
         expect(result[0].exercises).toHaveLength(0);

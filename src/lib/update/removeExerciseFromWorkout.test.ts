@@ -1,12 +1,26 @@
 import { describe, it, expect } from "vitest";
 import { removeExerciseFromWorkout } from "./removeExerciseFromWorkout";
-import type { Workout } from "../../types/workout";
-import { createExercise } from "../factories/createExercise";
+import type { Exercise, Workout } from "../../types/workout";
 
 describe("removeExerciseFromWorkout", () => {
     it("removes the exercise with the given id from the workout", () => {
-        const ex1 = createExercise({ name: "Squat" });
-        const ex2 = createExercise({ name: "Bench" });
+        const ex1: Exercise = {
+            id: "ex-1",
+            name: "Squat",
+            sets: 3,
+            reps: 8,
+            weight: 100,
+            notes: "",
+        };
+
+        const ex2: Exercise = {
+            id: "ex-2",
+            name: "Bench",
+            sets: 3,
+            reps: 10,
+            weight: 80,
+            notes: "",
+        };
 
         const workouts: Workout[] = [
             {
@@ -28,13 +42,18 @@ describe("removeExerciseFromWorkout", () => {
         expect(result).toHaveLength(2);
         expect(result[0].exercises).toHaveLength(1);
         expect(result[0].exercises[0].id).toBe(ex2.id);
-
-        // original array is not mutated
         expect(workouts[0].exercises).toHaveLength(2);
     });
 
     it("does nothing if exercise id does not exist", () => {
-        const ex1 = createExercise({ name: "Squat" });
+        const ex1: Exercise = {
+            id: "ex-1",
+            name: "Squat",
+            sets: 3,
+            reps: 8,
+            weight: 100,
+            notes: "",
+        };
 
         const workouts: Workout[] = [
             {
@@ -49,8 +68,6 @@ describe("removeExerciseFromWorkout", () => {
 
         expect(result).toHaveLength(1);
         expect(result[0].exercises).toHaveLength(1);
-
-        // original array is not mutated
         expect(workouts[0].exercises).toHaveLength(1);
     });
 });
