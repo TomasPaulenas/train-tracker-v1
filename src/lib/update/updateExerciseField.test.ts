@@ -1,12 +1,26 @@
 import { describe, it, expect } from "vitest";
-import type { Workout } from "../../types/workout";
+import type { Exercise, Workout } from "../../types/workout";
 import { updateExerciseField } from "./updateExerciseField";
-import { createExercise } from "../factories/createExercise";
 
 describe("updateExerciseField", () => {
     it("updates the given field on the correct exercise", () => {
-        const ex1 = createExercise({ name: "Squat" });
-        const ex2 = createExercise({ name: "Bench" });
+        const ex1: Exercise = {
+            id: "ex-1",
+            name: "Squat",
+            sets: 3,
+            reps: 8,
+            weight: 100,
+            notes: "",
+        };
+
+        const ex2: Exercise = {
+            id: "ex-2",
+            name: "Bench",
+            sets: 3,
+            reps: 10,
+            weight: 80,
+            notes: "",
+        };
 
         const workouts: Workout[] = [
             {
@@ -19,20 +33,23 @@ describe("updateExerciseField", () => {
 
         const result = updateExerciseField(workouts, "w1", ex2.id, "sets", 5);
 
-        // updated exercise
         expect(result[0].exercises).toHaveLength(2);
         expect(result[0].exercises[1].id).toBe(ex2.id);
-        expect((result[0].exercises[1] as any).sets).toBe(5);
+        expect(result[0].exercises[1].sets).toBe(5);
 
-        // other exercise unchanged
         expect(result[0].exercises[0].id).toBe(ex1.id);
-
-        // original not mutated
-        expect((workouts[0].exercises[1] as any).sets).not.toBe(5);
+        expect(workouts[0].exercises[1].sets).toBe(3);
     });
 
     it("does nothing if exercise id does not exist", () => {
-        const ex1 = createExercise({ name: "Squat" });
+        const ex1: Exercise = {
+            id: "ex-1",
+            name: "Squat",
+            sets: 3,
+            reps: 8,
+            weight: 100,
+            notes: "",
+        };
 
         const workouts: Workout[] = [
             {
@@ -47,8 +64,6 @@ describe("updateExerciseField", () => {
 
         expect(result).toHaveLength(1);
         expect(result[0].exercises).toHaveLength(1);
-
-        // original not mutated
-        expect((workouts[0].exercises[0] as any).sets).not.toBe(10);
+        expect(result[0].exercises[0].sets).toBe(3);
     });
 });
