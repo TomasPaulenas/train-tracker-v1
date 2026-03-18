@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Field } from "./Field";
+import { Field } from "../components/workouts/Field";
 
 type AuthMode = "login" | "register";
 

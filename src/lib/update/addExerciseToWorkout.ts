@@ -1,22 +1,19 @@
-import type { Workout } from "../../types/workout";
-import { createExercise } from "../factories/createExercise";
+import type { Exercise, Workout } from "../../types/workout";
+import { sortExercises } from "./sortExercises";
 
 export function addExerciseToWorkout(
     workouts: Workout[],
-    workoutId: string
+    workoutId: string,
+    exercise: Exercise
 ): Workout[] {
-    const newExercise = createExercise({ name: "" });
-
     return workouts.map((workout) => {
         if (workout.id !== workoutId) {
             return workout;
         }
 
-        const updatedExercises = [...workout.exercises, newExercise];
-
         return {
             ...workout,
-            exercises: updatedExercises,
+            exercises: sortExercises([...workout.exercises, exercise]),
         };
     });
 }

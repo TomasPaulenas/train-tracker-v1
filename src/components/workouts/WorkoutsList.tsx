@@ -1,5 +1,4 @@
-// src/components/WorkoutsList.tsx
-import type { Workout } from "../types/workout";
+import type { Workout } from "../../types/workout";
 import { WorkoutHeader } from "./WorkoutHeader";
 import { WorkoutBody } from "./WorkoutBody";
 
@@ -7,20 +6,17 @@ type Props = {
     workouts: Workout[];
     openWorkoutId: string | null;
     editingWorkoutId: string | null;
-    getDateLabel: (dateValue: string) => string;
-
     onToggleWorkout: (workoutId: string) => void;
     onStartEditWorkout: (workoutId: string) => void;
+    onCancelEditWorkout: () => void;
     onFinishEditWorkout: (workoutId: string, title: string) => void;
-
     onAddExercise: (workoutId: string) => void;
     onDeleteWorkout: (workoutId: string) => void;
-
     onDeleteExercise: (workoutId: string, exerciseId: string) => void;
     onExerciseNameChange: (
         workoutId: string,
         exerciseId: string,
-        name: string,
+        name: string
     ) => void;
     onExerciseFieldChange: (
         workoutId: string,
@@ -28,7 +24,6 @@ type Props = {
         field: "sets" | "reps" | "weight",
         value: number
     ) => void;
-
     onExerciseNotesChange: (
         workoutId: string,
         exerciseId: string,
@@ -36,13 +31,29 @@ type Props = {
     ) => void;
 };
 
+function getDateLabel(dateValue: string): string {
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+        return "no date";
+    }
+
+    return date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
+}
+
+
+
 export function WorkoutsList({
     workouts,
     openWorkoutId,
     editingWorkoutId,
-    getDateLabel,
     onToggleWorkout,
     onStartEditWorkout,
+    onCancelEditWorkout,
     onFinishEditWorkout,
     onAddExercise,
     onDeleteWorkout,
@@ -75,6 +86,7 @@ export function WorkoutsList({
                                 isEditing={isEditing}
                                 onToggle={() => onToggleWorkout(workout.id)}
                                 onStartEdit={() => onStartEditWorkout(workout.id)}
+                                onCancelEdit={onCancelEditWorkout}
                                 onFinishEdit={(title) => onFinishEditWorkout(workout.id, title)}
                                 onAddExercise={() => onAddExercise(workout.id)}
                                 onDeleteWorkout={() => onDeleteWorkout(workout.id)}
@@ -85,7 +97,6 @@ export function WorkoutsList({
                             <div className="border-t border-zinc-200 p-5">
                                 <WorkoutBody
                                     workout={workout}
-                                    onAddExercise={() => onAddExercise(workout.id)}
                                     onDeleteExercise={(exerciseId) =>
                                         onDeleteExercise(workout.id, exerciseId)
                                     }

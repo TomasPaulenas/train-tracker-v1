@@ -10,6 +10,7 @@ type Props = {
     isEditing: boolean;
     onToggle: () => void;
     onStartEdit: () => void;
+    onCancelEdit: () => void;
     onFinishEdit: (title: string) => void;
     onAddExercise: () => void;
     onDeleteWorkout: () => void;
@@ -23,6 +24,7 @@ export function WorkoutHeader({
     isEditing,
     onToggle,
     onStartEdit,
+    onCancelEdit,
     onFinishEdit,
     onAddExercise,
     onDeleteWorkout,
@@ -40,27 +42,27 @@ export function WorkoutHeader({
 
     function cancelEdit() {
         setDraftTitle(title);
-        onFinishEdit(title);
+        onCancelEdit();
     }
 
-    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-        if (e.key === "Enter") {
+    function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+        if (event.key === "Enter") {
             finishEdit();
             return;
         }
 
-        if (e.key === "Escape") {
+        if (event.key === "Escape") {
             cancelEdit();
         }
     }
 
-    function stop(e: MouseEvent) {
-        e.stopPropagation();
+    function stop(event: MouseEvent) {
+        event.stopPropagation();
     }
 
     return (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
                 {isEditing ? (
                     <div className="w-full">
                         <Field
@@ -77,7 +79,7 @@ export function WorkoutHeader({
                     <button
                         type="button"
                         onClick={onToggle}
-                        className="group w-full rounded-md p-2 -m-2 text-left transition-colors hover:bg-zinc-50"
+                        className="group -m-2 w-full rounded-md p-2 text-left transition-colors hover:bg-zinc-50"
                     >
                         <div className="flex items-center gap-2">
                             <span
@@ -106,11 +108,11 @@ export function WorkoutHeader({
                 {!isEditing && (
                     <button
                         type="button"
-                        onClick={(e) => {
-                            stop(e);
+                        onClick={(event) => {
+                            stop(event);
                             onStartEdit();
                         }}
-                        className="w-full sm:w-auto rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 whitespace-nowrap"
+                        className="w-full whitespace-nowrap rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 sm:w-auto"
                     >
                         Edit
                     </button>
@@ -118,11 +120,11 @@ export function WorkoutHeader({
 
                 <button
                     type="button"
-                    onClick={(e) => {
-                        stop(e);
+                    onClick={(event) => {
+                        stop(event);
                         onDeleteWorkout();
                     }}
-                    className="w-full sm:w-auto rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 whitespace-nowrap"
+                    className="w-full whitespace-nowrap rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 sm:w-auto"
                 >
                     Delete
                 </button>
@@ -130,11 +132,11 @@ export function WorkoutHeader({
                 {isOpen && (
                     <button
                         type="button"
-                        onClick={(e) => {
-                            stop(e);
+                        onClick={(event) => {
+                            stop(event);
                             onAddExercise();
                         }}
-                        className="w-full sm:w-auto rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 whitespace-nowrap"
+                        className="w-full whitespace-nowrap rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 sm:w-auto"
                     >
                         Add exercise
                     </button>

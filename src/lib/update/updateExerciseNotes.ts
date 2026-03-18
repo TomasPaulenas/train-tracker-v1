@@ -1,6 +1,5 @@
-
-
 import type { Workout } from "../../types/workout";
+import { sortExercises } from "./sortExercises";
 
 export function updateExerciseNotes(
     workouts: Workout[],
@@ -26,7 +25,7 @@ export function updateExerciseNotes(
 
         return {
             ...workout,
-            exercises: updatedExercises,
+            exercises: sortExercises(updatedExercises),
         };
     });
 }

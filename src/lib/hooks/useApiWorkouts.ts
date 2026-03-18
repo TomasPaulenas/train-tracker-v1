@@ -1,8 +1,30 @@
 import { useEffect, useState } from "react";
-import type { Workout } from "../../types/workout";
+import type { Workout, Exercise } from "../../types/workout";
+
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/workouts`;
 const AUTH_KEY = "traintracker-auth";
+
+function normalizeWorkouts(data: any[]): Workout[] {
+    return data.map((workout: any) => ({
+        id: String(workout.id),
+        title: workout.title,
+        date: workout.createdAt,
+        createdAt: workout.createdAt,
+        exercises: Array.isArray(workout.exercises)
+            ? workout.exercises
+                .map((exercise: any) => ({
+                    id: String(exercise.id),
+                    name: exercise.name,
+                    sets: exercise.sets ?? 0,
+                    reps: exercise.reps ?? 0,
+                    weight: exercise.weight ?? 0,
+                    notes: exercise.notes ?? "",
+                }))
+                .sort((a: Exercise, b: Exercise) => Number(a.id) - Number(b.id))
+            : [],
+    }));
+}
 
 export function useApiWorkouts(isAuthenticated: boolean) {
     const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -30,25 +52,7 @@ export function useApiWorkouts(isAuthenticated: boolean) {
                 }
 
                 const data = await response.json();
-
-                const normalizedWorkouts: Workout[] = data.map((workout: any) => ({
-                    id: String(workout.id),
-                    title: workout.title,
-                    date: workout.createdAt,
-                    createdAt: workout.createdAt,
-                    exercises: Array.isArray(workout.exercises)
-                        ? workout.exercises.map((exercise: any) => ({
-                            id: String(exercise.id),
-                            name: exercise.name,
-                            sets: exercise.sets ?? 0,
-                            reps: exercise.reps ?? 0,
-                            weight: exercise.weight ?? 0,
-                            notes: exercise.notes ?? "",
-                        }))
-                        : [],
-                }));
-
-                setWorkouts(normalizedWorkouts);
+                setWorkouts(normalizeWorkouts(data));
             } catch (error) {
                 console.log(error);
                 setWorkouts([]);

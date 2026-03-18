@@ -1,7 +1,5 @@
-// src/lib/update/updateExerciseField.ts
-// ESTE ARCHIVO TIENE QUE EXPORTAR "updateExerciseField" (tal cual)
-
 import type { Workout } from "../../types/workout";
+import { sortExercises } from "./sortExercises";
 
 export function updateExerciseField(
     workouts: Workout[],
@@ -28,7 +26,7 @@ export function updateExerciseField(
 
         return {
             ...workout,
-            exercises: updatedExercises,
+            exercises: sortExercises(updatedExercises),
         };
     });
 }

@@ -1,10 +1,9 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import type { Workout } from "../types/workout";
+import type { Workout } from "../../types/workout";
 import { Field } from "./Field";
 
 type Props = {
     workout: Workout;
-    onAddExercise: () => void;
     onDeleteExercise: (exerciseId: string) => void;
     onExerciseNameChange: (exerciseId: string, name: string) => void;
     onExerciseFieldChange: (
@@ -94,7 +93,11 @@ export function WorkoutBody({
         }));
     }
 
-    function commitName(exerciseId: string, draftValue: string, currentValue: string) {
+    function commitName(
+        exerciseId: string,
+        draftValue: string,
+        currentValue: string
+    ) {
         const trimmedValue = draftValue.trim();
 
         if (!trimmedValue) {
@@ -115,7 +118,11 @@ export function WorkoutBody({
         onExerciseNameChange(exerciseId, trimmedValue);
     }
 
-    function commitNotes(exerciseId: string, draftValue: string, currentValue: string) {
+    function commitNotes(
+        exerciseId: string,
+        draftValue: string,
+        currentValue: string
+    ) {
         if (draftValue === currentValue) {
             return;
         }
@@ -159,6 +166,11 @@ export function WorkoutBody({
     return (
         <div className="space-y-5">
             {workout.exercises.map((exercise) => {
+                console.log("exercise render", {
+                    workoutId: workout.id,
+                    exerciseId: exercise.id,
+                    name: exercise.name
+                });
                 const draft = drafts[exercise.id] ?? {
                     name: exercise.name ?? "",
                     sets: formatNumberField(exercise.sets),
@@ -208,9 +220,7 @@ export function WorkoutBody({
                                 <Field
                                     type="text"
                                     value={draft.name}
-                                    onChange={(value) =>
-                                        updateDraft(exercise.id, "name", value)
-                                    }
+                                    onChange={(value) => updateDraft(exercise.id, "name", value)}
                                     onBlur={handleNameBlur}
                                     placeholder="e.g. Bench press"
                                 />
@@ -224,9 +234,7 @@ export function WorkoutBody({
                                     type="number"
                                     min={0}
                                     value={draft.sets}
-                                    onChange={(value) =>
-                                        updateDraft(exercise.id, "sets", value)
-                                    }
+                                    onChange={(value) => updateDraft(exercise.id, "sets", value)}
                                     onBlur={handleSetsBlur}
                                 />
                             </div>
@@ -254,9 +262,7 @@ export function WorkoutBody({
                                     type="number"
                                     min={0}
                                     value={draft.reps}
-                                    onChange={(value) =>
-                                        updateDraft(exercise.id, "reps", value)
-                                    }
+                                    onChange={(value) => updateDraft(exercise.id, "reps", value)}
                                     onBlur={handleRepsBlur}
                                 />
                             </div>

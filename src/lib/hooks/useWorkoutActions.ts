@@ -1,84 +1,50 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { Workout } from "../../types/workout";
-import {
-    clearAuthToken,
-    loginDemoUser,
-    loginUser,
-    registerUser,
-    saveAuthToken,
-} from "../api/auth";
+
 import {
     createWorkoutRequest,
     deleteWorkoutRequest,
     updateWorkoutRequest,
 } from "../api/workout";
+
 import {
     createExerciseRequest,
     deleteExerciseRequest,
     updateExerciseRequest,
 } from "../api/exercise";
 
-type AuthMode = "login" | "register";
+import {
+    addWorkout,
+    deleteWorkout,
+    updateWorkoutDetails,
+    addExerciseToWorkout,
+    removeExerciseFromWorkout,
+    updateExerciseName,
+    updateExerciseField,
+    updateExerciseNotes,
+} from "../workoutsModel";
 
-type Params = {
-    authMode: AuthMode;
-    setAuthMode: Dispatch<SetStateAction<AuthMode>>;
-    setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+type UseWorkoutActionsParams = {
     setWorkouts: Dispatch<SetStateAction<Workout[]>>;
     setOpenWorkoutId: Dispatch<SetStateAction<string | null>>;
     setEditingWorkoutId: Dispatch<SetStateAction<string | null>>;
 };
 
 export function useWorkoutActions({
-    authMode,
-    setAuthMode,
-    setIsAuthenticated,
     setWorkouts,
     setOpenWorkoutId,
     setEditingWorkoutId,
-}: Params) {
+}: UseWorkoutActionsParams) {
     function toggleWorkout(id: string) {
         setOpenWorkoutId((prev) => (prev === id ? null : id));
         setEditingWorkoutId(null);
     }
 
-    async function handleAuthSubmit(data: { email: string; password: string }) {
-        try {
-            if (authMode === "login") {
-                const result = await loginUser(data);
-                saveAuthToken(result.token);
-                setIsAuthenticated(true);
-                return;
-            }
-
-            await registerUser(data);
-            setAuthMode("login");
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-
-    async function handleDemoLogin() {
-        try {
-            const result = await loginDemoUser();
-            saveAuthToken(result.token);
-            setIsAuthenticated(true);
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-
-    function handleLogout() {
-        clearAuthToken();
-        setIsAuthenticated(false);
-    }
-
     async function handleAddWorkout() {
         try {
             const newWorkout = await createWorkoutRequest();
-            setWorkouts((prev) => [newWorkout, ...prev]);
+
+            setWorkouts((prev) => addWorkout(prev, newWorkout));
         } catch (error) {
             console.log(error);
         }
@@ -88,7 +54,7 @@ export function useWorkoutActions({
         try {
             await deleteWorkoutRequest(id);
 
-            setWorkouts((prev) => prev.filter((workout) => workout.id !== id));
+            setWorkouts((prev) => deleteWorkout(prev, id));
             setOpenWorkoutId((prev) => (prev === id ? null : prev));
             setEditingWorkoutId((prev) => (prev === id ? null : prev));
         } catch (error) {
@@ -101,16 +67,7 @@ export function useWorkoutActions({
             const updatedWorkout = await updateWorkoutRequest(workoutId, title);
 
             setWorkouts((prev) =>
-                prev.map((workout) => {
-                    if (workout.id !== workoutId) {
-                        return workout;
-                    }
-
-                    return {
-                        ...workout,
-                        title: updatedWorkout.title,
-                    };
-                })
+                updateWorkoutDetails(prev, workoutId, updatedWorkout.title)
             );
 
             setEditingWorkoutId(null);
@@ -124,39 +81,18 @@ export function useWorkoutActions({
             const newExercise = await createExerciseRequest(workoutId);
 
             setWorkouts((prev) =>
-                prev.map((workout) => {
-                    if (workout.id !== workoutId) {
-                        return workout;
-                    }
-
-                    return {
-                        ...workout,
-                        exercises: [...workout.exercises, newExercise],
-                    };
-                })
+                addExerciseToWorkout(prev, workoutId, newExercise)
             );
         } catch (error) {
             console.log(error);
         }
     }
-
     async function handleDeleteExercise(workoutId: string, exerciseId: string) {
         try {
             await deleteExerciseRequest(exerciseId);
 
             setWorkouts((prev) =>
-                prev.map((workout) => {
-                    if (workout.id !== workoutId) {
-                        return workout;
-                    }
-
-                    return {
-                        ...workout,
-                        exercises: workout.exercises.filter(
-                            (exercise) => exercise.id !== exerciseId
-                        ),
-                    };
-                })
+                removeExerciseFromWorkout(prev, workoutId, exerciseId)
             );
         } catch (error) {
             console.log(error);
@@ -169,28 +105,10 @@ export function useWorkoutActions({
         name: string
     ) {
         try {
-            const updatedExercise = await updateExerciseRequest(exerciseId, { name });
+            await updateExerciseRequest(exerciseId, { name });
 
             setWorkouts((prev) =>
-                prev.map((workout) => {
-                    if (workout.id !== workoutId) {
-                        return workout;
-                    }
-
-                    return {
-                        ...workout,
-                        exercises: workout.exercises.map((exercise) => {
-                            if (exercise.id !== exerciseId) {
-                                return exercise;
-                            }
-
-                            return {
-                                ...exercise,
-                                ...updatedExercise,
-                            };
-                        }),
-                    };
-                })
+                updateExerciseName(prev, workoutId, exerciseId, name)
             );
         } catch (error) {
             console.log(error);
@@ -204,30 +122,10 @@ export function useWorkoutActions({
         value: number
     ) {
         try {
-            const updatedExercise = await updateExerciseRequest(exerciseId, {
-                [field]: value,
-            });
+            await updateExerciseRequest(exerciseId, { [field]: value });
 
             setWorkouts((prev) =>
-                prev.map((workout) => {
-                    if (workout.id !== workoutId) {
-                        return workout;
-                    }
-
-                    return {
-                        ...workout,
-                        exercises: workout.exercises.map((exercise) => {
-                            if (exercise.id !== exerciseId) {
-                                return exercise;
-                            }
-
-                            return {
-                                ...exercise,
-                                ...updatedExercise,
-                            };
-                        }),
-                    };
-                })
+                updateExerciseField(prev, workoutId, exerciseId, field, value)
             );
         } catch (error) {
             console.log(error);
@@ -240,28 +138,10 @@ export function useWorkoutActions({
         notes: string
     ) {
         try {
-            const updatedExercise = await updateExerciseRequest(exerciseId, { notes });
+            await updateExerciseRequest(exerciseId, { notes });
 
             setWorkouts((prev) =>
-                prev.map((workout) => {
-                    if (workout.id !== workoutId) {
-                        return workout;
-                    }
-
-                    return {
-                        ...workout,
-                        exercises: workout.exercises.map((exercise) => {
-                            if (exercise.id !== exerciseId) {
-                                return exercise;
-                            }
-
-                            return {
-                                ...exercise,
-                                ...updatedExercise,
-                            };
-                        }),
-                    };
-                })
+                updateExerciseNotes(prev, workoutId, exerciseId, notes)
             );
         } catch (error) {
             console.log(error);
@@ -270,9 +150,6 @@ export function useWorkoutActions({
 
     return {
         toggleWorkout,
-        handleAuthSubmit,
-        handleDemoLogin,
-        handleLogout,
         handleAddWorkout,
         handleDeleteWorkout,
         handleFinishEdit,
