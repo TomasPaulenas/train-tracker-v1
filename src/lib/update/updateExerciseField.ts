@@ -18,6 +18,12 @@ export function updateExerciseField(
                 return exercise;
             }
 
+            if (value < 0) {
+                return exercise
+            } else if (Number.isNaN(value)) {
+                return exercise
+            }
+
             return {
                 ...exercise,
                 [field]: value,

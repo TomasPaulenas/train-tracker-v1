@@ -1,9 +1,12 @@
 import type { Workout } from "../../types/workout";
 import { WorkoutHeader } from "./WorkoutHeader";
 import { WorkoutBody } from "./WorkoutBody";
+import { workoutMetrics } from "../../lib/workoutMetrics";
+import type { ExerciseTemplate } from "../../types/exerciseTemplate";
 
 type Props = {
     workouts: Workout[];
+    templates: ExerciseTemplate[];
     openWorkoutId: string | null;
     editingWorkoutId: string | null;
     onToggleWorkout: (workoutId: string) => void;
@@ -45,9 +48,8 @@ function getDateLabel(dateValue: string): string {
     });
 }
 
-
-
 export function WorkoutsList({
+    templates,
     workouts,
     openWorkoutId,
     editingWorkoutId,
@@ -67,6 +69,7 @@ export function WorkoutsList({
             {workouts.map((workout) => {
                 const isOpen = openWorkoutId === workout.id;
                 const isEditing = editingWorkoutId === workout.id;
+                const metrics = workoutMetrics(workout);
 
                 return (
                     <div
@@ -90,12 +93,14 @@ export function WorkoutsList({
                                 onFinishEdit={(title) => onFinishEditWorkout(workout.id, title)}
                                 onAddExercise={() => onAddExercise(workout.id)}
                                 onDeleteWorkout={() => onDeleteWorkout(workout.id)}
+                                workoutMetrics={metrics}
                             />
                         </div>
 
                         {isOpen && (
                             <div className="border-t border-zinc-200 p-5">
                                 <WorkoutBody
+                                    templates={templates}
                                     workout={workout}
                                     onDeleteExercise={(exerciseId) =>
                                         onDeleteExercise(workout.id, exerciseId)

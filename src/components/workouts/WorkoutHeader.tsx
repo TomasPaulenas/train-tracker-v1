@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
 import { Field } from "./Field";
 
+
 type Props = {
     title: string;
     exerciseCount: number;
     dateLabel: string;
     isOpen: boolean;
     isEditing: boolean;
+    workoutMetrics: string;
     onToggle: () => void;
     onStartEdit: () => void;
     onCancelEdit: () => void;
     onFinishEdit: (title: string) => void;
     onAddExercise: () => void;
     onDeleteWorkout: () => void;
+
 };
 
 export function WorkoutHeader({
@@ -22,6 +25,7 @@ export function WorkoutHeader({
     dateLabel,
     isOpen,
     isEditing,
+    workoutMetrics,
     onToggle,
     onStartEdit,
     onCancelEdit,
@@ -97,8 +101,12 @@ export function WorkoutHeader({
                             </span>
                         </div>
 
-                        <div className="mt-1 text-sm text-zinc-600">
+                        <div className="mt-1 text-sm font-medium text-zinc-800">
                             {exerciseCount} exercises · {dateLabel}
+                        </div>
+                        <div className="mt-1 text-xs text-zinc-500">
+                            Volume · {workoutMetrics}
+
                         </div>
                     </button>
                 )}

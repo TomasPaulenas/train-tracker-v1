@@ -21,6 +21,7 @@ export function useWelcomeFlow() {
         window.setTimeout(() => {
             setShowTransition(true);
             setTransitionReady(false);
+        
 
             window.setTimeout(() => {
                 setTransitionReady(true);

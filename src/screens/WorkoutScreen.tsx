@@ -2,16 +2,14 @@ import { useState } from "react";
 import { WorkoutsList } from "../components/workouts/WorkoutsList";
 import { useApiWorkouts } from "../lib/hooks/useApiWorkouts";
 import { useWorkoutActions } from "../lib/hooks/useWorkoutActions";
+import { useApiTemplates } from "../lib/hooks/useExerciseTemplates";
+import type { Workout } from "../types/workout";
 
 type WorkoutScreenProps = {
     isAuthenticated: boolean;
     onLogout: () => void;
     onReset: () => void;
 };
-
-
-
-import type { Workout } from "../types/workout";
 
 function getWorkoutTotals(workouts: Workout[]) {
     const totalWorkouts = workouts.length;
@@ -37,6 +35,7 @@ export function WorkoutScreen({
     const [editingWorkoutId, setEditingWorkoutId] = useState<string | null>(null);
 
     const { workouts, setWorkouts, hydrated } = useApiWorkouts(isAuthenticated);
+    const { templates } = useApiTemplates(isAuthenticated);
 
     const {
         toggleWorkout,
@@ -135,6 +134,7 @@ export function WorkoutScreen({
 
                 <WorkoutsList
                     workouts={workouts}
+                    templates={templates}
                     openWorkoutId={openWorkoutId}
                     editingWorkoutId={editingWorkoutId}
                     onToggleWorkout={toggleWorkout}

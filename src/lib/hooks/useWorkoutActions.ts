@@ -87,6 +87,7 @@ export function useWorkoutActions({
             console.log(error);
         }
     }
+
     async function handleDeleteExercise(workoutId: string, exerciseId: string) {
         try {
             await deleteExerciseRequest(exerciseId);
