@@ -1,5 +1,4 @@
 import { getAuthToken } from "./auth";
-import type { ExerciseTemplate } from "../../types/exerciseTemplate";
 
 const TEMPLATES_BASE_URL = `${import.meta.env.VITE_API_URL}/api/exercise-templates`;
 
