@@ -32,12 +32,20 @@ function formatNumberField(value: number | null | undefined) {
     return String(value);
 }
 
+function normalizeExerciseName(name: string | null | undefined) {
+    if (name === "Exercise") {
+        return "";
+    }
+
+    return name ?? "";
+}
+
 function buildDrafts(workout: Workout): Record<string, ExerciseDraft> {
     const nextDrafts: Record<string, ExerciseDraft> = {};
 
     for (const exercise of workout.exercises) {
         nextDrafts[exercise.id] = {
-            name: exercise.name ?? "",
+            name: normalizeExerciseName(exercise.name),
             sets: formatNumberField(exercise.sets),
             reps: formatNumberField(exercise.reps),
             weight: formatNumberField(exercise.weight),
@@ -74,7 +82,7 @@ export function WorkoutBody({
                     next[exercise.id] = existingDraft;
                 } else {
                     next[exercise.id] = {
-                        name: exercise.name ?? "",
+                        name: normalizeExerciseName(exercise.name),
                         sets: formatNumberField(exercise.sets),
                         reps: formatNumberField(exercise.reps),
                         weight: formatNumberField(exercise.weight),
@@ -113,8 +121,9 @@ export function WorkoutBody({
         currentValue: string
     ) {
         const trimmedValue = draftValue.trim();
+        const normalizedCurrentValue = normalizeExerciseName(currentValue);
 
-        if (trimmedValue === currentValue) {
+        if (trimmedValue === normalizedCurrentValue) {
             return;
         }
 
@@ -187,7 +196,7 @@ export function WorkoutBody({
             ) : (
                 workout.exercises.map((exercise) => {
                     const draft = drafts[exercise.id] ?? {
-                        name: exercise.name ?? "",
+                        name: normalizeExerciseName(exercise.name),
                         sets: formatNumberField(exercise.sets),
                         reps: formatNumberField(exercise.reps),
                         weight: formatNumberField(exercise.weight),

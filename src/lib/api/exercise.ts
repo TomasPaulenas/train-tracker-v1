@@ -20,7 +20,7 @@ export async function createExerciseRequest(workoutId: string) {
             Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-            name: "New exercise",
+            name: "Exercise",
             notes: "",
             workoutId: Number(workoutId),
             sets: 0,
